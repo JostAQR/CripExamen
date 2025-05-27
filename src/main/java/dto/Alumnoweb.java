@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Alumnoweb.findAll", query = "SELECT a FROM Alumnoweb a"),
     @NamedQuery(name = "Alumnoweb.findByCodiEstdWebcodiEstdWeb", query = "SELECT a FROM Alumnoweb a WHERE a.codiEstdWebcodiEstdWeb = :codiEstdWebcodiEstdWeb"),
     @NamedQuery(name = "Alumnoweb.findByNdniEstdWeb", query = "SELECT a FROM Alumnoweb a WHERE a.ndniEstdWeb = :ndniEstdWeb"),
+    @NamedQuery(name = "Alumnoweb.validar", query = "SELECT a FROM Alumnoweb a WHERE a.ndniEstdWeb = :ndniEstdWeb and a.passEstd = :passEstd"),
     @NamedQuery(name = "Alumnoweb.findByAppaEstdWeb", query = "SELECT a FROM Alumnoweb a WHERE a.appaEstdWeb = :appaEstdWeb"),
     @NamedQuery(name = "Alumnoweb.findByApmaEstdWeb", query = "SELECT a FROM Alumnoweb a WHERE a.apmaEstdWeb = :apmaEstdWeb"),
     @NamedQuery(name = "Alumnoweb.findByNombEstdWeb", query = "SELECT a FROM Alumnoweb a WHERE a.nombEstdWeb = :nombEstdWeb"),

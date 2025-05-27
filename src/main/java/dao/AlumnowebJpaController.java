@@ -12,8 +12,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -24,7 +28,7 @@ public class AlumnowebJpaController implements Serializable {
     public AlumnowebJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
-    private EntityManagerFactory emf = null;
+    private EntityManagerFactory emf =null;
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
@@ -133,5 +137,41 @@ public class AlumnowebJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public boolean validarlogueo(String dni, String passwordPlano) {
+        EntityManager em = getEntityManager();
+        try {
+            // Buscar al usuario por su DNI
+            TypedQuery<Alumnoweb> query = em.createQuery(
+                    "SELECT a FROM Alumnoweb a WHERE a.ndniEstdWeb = :dni", Alumnoweb.class);
+            query.setParameter("dni", dni);
+
+            Alumnoweb usuario = null;
+            try {
+                usuario = query.getSingleResult();
+            } catch (NoResultException e) {
+                return false; // No existe el usuario
+            }
+
+            // Comparar el password plano con el hash almacenado usando BCrypt
+            return BCrypt.checkpw(passwordPlano, usuario.getPassEstd());
+
+        } finally {
+            em.close();
+        }
+
+    }
+
+    public Alumnoweb findByDni(String dni) {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Alumnoweb> query = em.createNamedQuery("Alumnoweb.findByNdniEstdWeb", Alumnoweb.class);
+            query.setParameter("ndniEstdWeb", dni);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 }

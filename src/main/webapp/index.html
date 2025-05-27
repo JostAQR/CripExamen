@@ -3,22 +3,22 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
     <title>SB Admin 2 - Login</title>
 
     <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+        rel="stylesheet" />
 
     <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
 
 </head>
 
@@ -41,27 +41,25 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
-                                    <form class="user">
+                                    <form class="user" id="loginForm" onsubmit="return false;">
                                         <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address...">
+                                            <input type="text" class="form-control form-control-user" id="user" name="user"
+                                                placeholder="Enter DNI..." />
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Password">
+                                            <input type="password" class="form-control form-control-user" id="pass"
+                                                name="pass" placeholder="Password" />
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
-                                                <label class="custom-control-label" for="customCheck">Remember
-                                                    Me</label>
+                                                <input type="checkbox" class="custom-control-input" id="customCheck" />
+                                                <label class="custom-control-label" for="customCheck">Remember Me</label>
                                             </div>
                                         </div>
-                                        <a href="principal.html" class="btn btn-primary btn-user btn-block">
+                                        <button type="button" class="btn btn-primary btn-user btn-block" onclick="login()">
                                             Login
-                                        </a>
-                                        <hr>
+                                        </button>
+                                        <hr />
                                         <a href="principal.html" class="btn btn-google btn-user btn-block">
                                             <i class="fab fa-google fa-fw"></i> Login with Google
                                         </a>
@@ -69,13 +67,15 @@
                                             <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
                                         </a>
                                     </form>
-                                    <hr>
+                                    <hr />
                                     <div class="text-center">
                                         <a class="small" href="forgot-password.html">Forgot Password?</a>
                                     </div>
                                     <div class="text-center">
                                         <a class="small" href="register.html">Create an Account!</a>
                                     </div>
+
+                                    <div id="message" class="mt-3 text-center text-danger"></div> <!-- Para mostrar mensajes -->
                                 </div>
                             </div>
                         </div>
@@ -97,6 +97,64 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+
+    <script>
+        async function login() {
+    const user = document.getElementById('user').value.trim();
+    const pass = document.getElementById('pass').value.trim();
+    const messageDiv = document.getElementById('message');
+
+    console.log("Intentando login con:", { user, pass });
+
+    if (!user || !pass) {
+        messageDiv.textContent = "Por favor, complete DNI y contraseña.";
+        console.log("Faltan datos de usuario o contraseña");
+        return;
+    }
+
+    try {
+        const response = await fetch('login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                user: user,
+                pass: pass,
+            }),
+        });
+
+        console.log("Respuesta del servidor:", response);
+
+        if (!response.ok) {
+            throw new Error('Error en la conexión');
+        }
+
+        const result = await response.text();
+
+        console.log("Resultado del login:", result);
+
+        // Para probar, vamos a imprimir el texto completo del resultado
+        // Ajusta aquí la validación según el mensaje real que recibas del servidor
+        if (result.includes('ok')) {
+            messageDiv.style.color = 'green';
+            messageDiv.textContent = 'Login exitoso. Redirigiendo...';
+            setTimeout(() => {
+                window.location.href = 'principal.html';
+            }, 1500);
+        } else {
+            messageDiv.style.color = 'red';
+            messageDiv.textContent = 'Usuario o contraseña incorrectos.';
+        }
+
+    } catch (error) {
+        console.error("Error en login:", error);
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = 'Error: ' + error.message;
+    }
+}
+
+    </script>
 
 </body>
 
