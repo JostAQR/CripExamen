@@ -30,6 +30,10 @@ public class login extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
 
         try (PrintWriter out = response.getWriter()) {
+            String passTest = "1234"; // Cambia esto por la contraseña que quieres guardar
+            String hash = BCrypt.hashpw(passTest, BCrypt.gensalt());
+            System.out.println("Contraseña en texto plano: " + passTest);
+            System.out.println("Hash para BD: " + hash);
             String user = request.getParameter("user"); // DNI
             String pass = request.getParameter("pass"); // Password en texto plano
 
